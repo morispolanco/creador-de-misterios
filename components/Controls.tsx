@@ -12,6 +12,7 @@ interface ControlsProps {
     isLoadingIdea: boolean;
     isLoadingStory: boolean;
     isLoadingAudio: boolean;
+    isLoadingModification: boolean;
 }
 
 const Controls: React.FC<ControlsProps> = ({
@@ -21,9 +22,10 @@ const Controls: React.FC<ControlsProps> = ({
     onCreateStory,
     isLoadingIdea,
     isLoadingStory,
-    isLoadingAudio
+    isLoadingAudio,
+    isLoadingModification
 }) => {
-    const isAnyLoading = isLoadingIdea || isLoadingStory || isLoadingAudio;
+    const isAnyLoading = isLoadingIdea || isLoadingStory || isLoadingAudio || isLoadingModification;
 
     return (
         <div className="bg-gray-800 p-6 rounded-lg shadow-2xl h-full flex flex-col space-y-6 sticky top-24">

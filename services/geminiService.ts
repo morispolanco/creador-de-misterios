@@ -1,3 +1,4 @@
+
 import { GoogleGenAI } from "@google/genai";
 
 if (!process.env.API_KEY) {
@@ -75,6 +76,50 @@ Tu tarea es escribir un cuento corto en español, basado en la idea proporcionad
         throw new Error("No se pudo conectar con el servicio de IA para generar el cuento.");
     }
 };
+
+/**
+ * Modifica un cuento existente basado en una solicitud del usuario.
+ * @param currentStory - El cuento actual a modificar.
+ * @param modificationRequest - La instrucción del usuario para la modificación.
+ * @returns Un iterador asíncrono que produce los trozos del cuento modificado.
+ */
+export const modifyStoryStream = async (currentStory: string, modificationRequest: string) => {
+    try {
+        const systemInstruction = `Eres un talentoso editor de guiones y cuentos, especializado en el género de misterio y ciencia ficción al estilo de "La Dimensión Desconocida". Tu tarea es reescribir un cuento proporcionado por el usuario basándote en sus instrucciones de modificación. Debes mantener el tono, el estilo y la atmósfera del cuento original (narrativa sobria, suspense psicológico, giro irónico final) mientras aplicas los cambios solicitados de forma coherente y creativa.
+
+**Reglas estrictas a seguir:**
+1.  **Reescritura Completa:** No respondas con comentarios, solo con el cuento completo reescrito desde el título hasta el final.
+2.  **Formato:** Mantén el formato original: el título evocador en la primera línea, seguido por el cuerpo del cuento. Utiliza guiones largos (—) para los diálogos.
+3.  **Integración de Cambios:** Integra la modificación de manera fluida y natural en la narrativa.
+4.  **Consistencia:** Asegúrate de que el cuento modificado siga siendo coherente y fiel al estilo de Rod Serling.`;
+        
+        const userPrompt = `Aquí está el cuento que necesito que modifiques:
+---
+${currentStory}
+---
+
+Y aquí está mi solicitud de modificación:
+"${modificationRequest}"
+
+Por favor, reescribe el cuento completo aplicando este cambio.`;
+
+        const response = await ai.models.generateContentStream({
+            model: storyGenerationModel,
+            contents: userPrompt,
+            config: {
+                systemInstruction: systemInstruction,
+                temperature: 0.8,
+                topP: 0.95
+            }
+        });
+        
+        return response;
+    } catch (error) {
+        console.error("Error en modifyStoryStream:", error);
+        throw new Error("No se pudo conectar con el servicio de IA para modificar el cuento.");
+    }
+};
+
 
 /**
  * Genera audio a partir de un texto utilizando el modelo TTS.
